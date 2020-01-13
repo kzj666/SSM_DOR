@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.kk.mapper.LatebackMapper">
+    <sql id="table_name">
+        tbl_lb
+    </sql>
+    <sql id="select_fields">
+        lb_id , lb_name, lb_time
+    </sql>
+    <resultMap id="lbResult" type="com.kk.bean.Lateback">
+        <id column="lb_id" property="lbId"></id>
+        <result column="lb_name" property="lbName"></result>
+        <result column="lb_time" property="lbTime"></result>
+    </resultMap>
+
+    <select id="selectLbsByLimitAndOffset" resultMap="lbResult">
+        SELECT
+        lb_num as 'lbNum', lb_id as 'lbId', lb_name as 'lbName', lb_time as 'lbTime'
+        FROM
+        <include refid="table_name"></include>
+        LIMIT #{offset}, #{limit}
+    </select>
+
+    <update id="updateLbById" parameterType="com.kk.bean.Lateback">
+        UPDATE
+        <include refid="table_name"></include>
+        SET
+        lb_name = #{lateback.lbName, jdbcType = VARCHAR},
+        lb_time = #{lateback.lbTime, jdbcType = VARCHAR}
+        WHERE
+        lb_id = #{lbId}
+    </update>
+
+</mapper>

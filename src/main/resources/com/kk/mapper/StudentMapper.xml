@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.kk.mapper.StudentMapper">
+    <sql id="table_name">tbl_stu</sql>
+    <sql id="select_fields">
+      stu_id, stu_name, stu_tel, gender, sdor_id
+    </sql>
+    <sql id="select_withdor_fields">
+        stu_id, stu_name, stu_tel, gender, sdor_id, dor_id, dor_master, dor_name
+    </sql>
+
+    <resultMap id="withDorResultMap" type="com.kk.bean.Student">
+        <id column="stu_id" property="stuId"></id>
+        <result column="stu_name" property="stuName"></result>
+        <result column="stu_tel" property="stuTel"></result>
+        <result column="gender" property="gender"></result>
+        <result column="sdor_id" property="sdorId"></result>
+        <association property="dormitory" column="dor_id" javaType="com.kk.bean.Dormitory">
+            <id column="dor_id" property="dorId"></id>
+            <result column="dor_master" property="dorMaster"></result>
+            <result column="dor_name" property="dorName"></result>
+        </association>
+    </resultMap>
+
+    <select id="selectOneById" parameterType="java.lang.Integer" resultType="com.kk.bean.Student">
+        SELECT
+        stu_id stuId, stu_name stuName, stu_tel stuTel, gender, sdor_id sdorId
+        FROM
+        <include refid="table_name"/>
+        WHERE
+        stu_id = #{stuId}
+    </select>
+
+    <select id="selectOneByName" parameterType="String" resultType="com.kk.bean.Student">
+        SELECT
+        stu_id stuId, stu_name stuName, stu_tel stuTel, gender, sdor_id sdorId
+        FROM
+        <include refid="table_name"/>
+        WHERE
+        stu_name = #{stuName}
+    </select>
+
+    <select id="selectWithDorById" parameterType="String" resultMap="withDorResultMap">
+        SELECT
+        <include refid="select_withdor_fields"/>
+        FROM
+        tbl_stu s, tbl_dor d
+        WHERE
+        s.sdor_id = d.dor_id
+        AND
+        s.stu_id = #{stuId}
+    </select>
+
+    <select id="selectByLimitAndOffset" resultMap="withDorResultMap">
+        SELECT
+        <include refid="select_withdor_fields"></include>
+        FROM
+        tbl_stu s
+        LEFT JOIN
+        tbl_dor d
+        ON
+        s.sdor_id = d.dor_id
+        ORDER BY s.sdor_id,s.stu_id
+        LIMIT #{offset}, #{limit}
+    </select>
+
+    <update id="updateOneById" parameterType="com.kk.bean.Student">
+        UPDATE
+        <include refid="table_name"/>
+        SET
+        stu_name = #{student.stuName ,jdbcType = VARCHAR},
+        stu_tel = #{student.stuTel, jdbcType = VARCHAR},
+        gender = #{student.gender, jdbcType = VARCHAR},
+        sdor_id = #{student.sdorId, jdbcType = INTEGER}
+        WHERE
+        stu_id = #{stuId, jdbcType = INTEGER}
+    </update>
+</mapper>

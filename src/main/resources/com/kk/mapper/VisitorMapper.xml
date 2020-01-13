@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.kk.mapper.VisitorMapper">
+    <sql id="table_name">
+        tbl_vtr
+    </sql>
+    <sql id="select_fields">
+        vtr_id , vtr_name, vtr_time, vtr_reason
+    </sql>
+    <resultMap id="vtrResult" type="com.kk.bean.Visitor">
+        <id column="vtr_id" property="vtrId"></id>
+        <result column="vtr_name" property="vtrName"></result>
+        <result column="vtr_time" property="vtrTime"></result>
+        <result column="vtr_reason" property="vtrReason"></result>
+    </resultMap>
+
+    <select id="selectVtrsByLimitAndOffset" resultMap="vtrResult">
+        SELECT
+        vtr_id as 'vtrId', vtr_name as 'vtrName', vtr_time as 'vtrTime', vtr_reason as 'vtrReason'
+        FROM
+        <include refid="table_name"></include>
+        LIMIT #{offset}, #{limit}
+    </select>
+
+    <update id="updateVtrById" parameterType="com.kk.bean.Visitor">
+        UPDATE
+        <include refid="table_name"></include>
+        SET
+        vtr_name = #{visitor.vtrName, jdbcType = VARCHAR},
+        vtr_time = #{visitor.vtrTime, jdbcType = VARCHAR},
+        vtr_reason = #{visitor.vtrReason, jdbcType = VARCHAR}
+        WHERE
+        vtr_id = #{vtrId}
+    </update>
+
+</mapper>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.kk.mapper.DormitoryMapper">
+    <sql id="table_name">
+        tbl_dor
+    </sql>
+    <sql id="select_fields">
+        dor_id , dor_name, dor_master
+    </sql>
+    <resultMap id="dorResult" type="com.kk.bean.Dormitory">
+        <id column="dor_id" property="dorId"></id>
+        <result column="dor_name" property="dorName"></result>
+        <result column="dor_master" property="dorMaster"></result>
+    </resultMap>
+
+    <select id="selectDorsByLimitAndOffset" resultMap="dorResult">
+        SELECT
+        dor_id as 'dorId', dor_name as 'dorName', dor_master as 'dorMaster'
+        FROM
+        <include refid="table_name"></include>
+        LIMIT #{offset}, #{limit}
+    </select>
+
+    <update id="updateDorById" parameterType="com.kk.bean.Dormitory">
+        UPDATE
+        <include refid="table_name"></include>
+        SET
+        dor_name = #{dormitory.dorName, jdbcType = VARCHAR},
+        dor_master = #{dormitory.dorMaster, jdbcType = VARCHAR}
+        WHERE
+        dor_id = #{dorId}
+    </update>
+
+</mapper>
