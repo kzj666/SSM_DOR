@@ -35,6 +35,8 @@ public class LoginController {
         System.out.println(username + password);
         if (!"admin1234".equals(username + password)){
             return JsonMsg.fail().addInfo("login_error", "输入账号用户名与密码不匹配，请重新输入！");
+        }else {
+            request.getSession().setAttribute("user", username);
         }
         return JsonMsg.success();
     }
